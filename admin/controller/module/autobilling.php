@@ -136,17 +136,17 @@ class ControllerModuleAutobilling extends Controller {
 		// USER settings
 
 		if (isset($this->request->post['autobilling_mail_bank'])) {
-			$data['autobilling_mail_bank'] = $this->fixREKENING($this->request->post['autobilling_mail_bank']);
+			$data['autobilling_mail_bank'] = $this->cleanAccountNumber($this->request->post['autobilling_mail_bank']);
 		} else {
-			$data['autobilling_mail_bank'] = $this->fixREKENING($this->config->get('autobilling_mail_bank'));
+			$data['autobilling_mail_bank'] = $this->cleanAccountNumber($this->config->get('autobilling_mail_bank'));
 
 		}
 
 		// data Nomor Rekening Mandiri
 		if (isset($this->request->post['autobilling_account_Mandiri'])) {
-			$data['autobilling_account_Mandiri'] = $this->fixREKENING($this->request->post['autobilling_account_Mandiri']);
+			$data['autobilling_account_Mandiri'] = $this->cleanAccountNumber($this->request->post['autobilling_account_Mandiri']);
 		} else {
-			$data['autobilling_account_Mandiri'] = $this->fixREKENING($this->config->get('autobilling_account_Mandiri'));
+			$data['autobilling_account_Mandiri'] = $this->cleanAccountNumber($this->config->get('autobilling_account_Mandiri'));
 
 		} 
 			
@@ -154,9 +154,9 @@ class ControllerModuleAutobilling extends Controller {
 
 		// data Nomor Rekening BCA      autobilling_account_BCA
 		if (isset($this->request->post['autobilling_account_BCA'])) {
-			$data['autobilling_account_BCA'] = $this->fixREKENING($this->request->post['autobilling_account_BCA']);
+			$data['autobilling_account_BCA'] = $this->cleanAccountNumber($this->request->post['autobilling_account_BCA']);
 		} else {
-			$data['autobilling_account_BCA'] = $this->fixREKENING($this->config->get('autobilling_account_BCA'));
+			$data['autobilling_account_BCA'] = $this->cleanAccountNumber($this->config->get('autobilling_account_BCA'));
 		}
 
 
@@ -273,7 +273,7 @@ class ControllerModuleAutobilling extends Controller {
 		return $query->row;
 	}
 
-	public function fixREKENING($string) {
+	public function cleanAccountNumber($string) {
 		$find[]     = '-';
 		$replace[] = '';
 

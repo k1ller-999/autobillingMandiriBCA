@@ -1,12 +1,23 @@
 <?php
+if (!class_exists('Controller')) {
+	/**
+	 * Compatibility stub for environments where the framework's base Controller
+	 * class is not available (prevents static analysis/runtime "unknown class" errors).
+	 */
+	class Controller {
+		// minimal stub
+	}
+}
 class ControllerModuleAutobilling extends Controller {
-	private $error = array();
+	private $error = [];
 
 	
 	public function install() {
-		$this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "autobilling_saldo");
+		$prefix = defined(constant_name: 'DB_PREFIX') ? DB_PREFIX : '';
 
-		$this->db->query("CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "autobilling_saldo` (
+		$this->db->query("DROP TABLE IF EXISTS `" . $prefix . "autobilling_saldo`");
+
+		$this->db->query("CREATE TABLE IF NOT EXISTS `" . $prefix . "autobilling_saldo` (
 		  `saldo_id` int(2) NOT NULL AUTO_INCREMENT,
 		  `tgl` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 		  `saldo_bca` float(15,2) NOT NULL DEFAULT '0',
@@ -15,14 +26,14 @@ class ControllerModuleAutobilling extends Controller {
 		) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;");
 
 	
-		$this->db->query("INSERT INTO " . DB_PREFIX . "autobilling_saldo SET 
+		$this->db->query("INSERT INTO `" . $prefix . "autobilling_saldo` SET 
 			tgl = '" . date('Y-m-d H:i:s'). "', 
 			saldo_bca = '0',
 			saldo_mandiri = '0'");
 
 			
- 		$this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "autobilling_mutasibca");
-		$this->db->query("CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "autobilling_mutasibca` (
+		$this->db->query("DROP TABLE IF EXISTS `" . $prefix . "autobilling_mutasibca`");
+		$this->db->query("CREATE TABLE IF NOT EXISTS `" . $prefix . "autobilling_mutasibca` (
 		  `mutasi_id` int(11) NOT NULL AUTO_INCREMENT,
 		  `tgl` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 		  `tglstr` varchar(20) NULL DEFAULT '2015/09/01',
@@ -34,8 +45,8 @@ class ControllerModuleAutobilling extends Controller {
 		  PRIMARY KEY (`mutasi_id`)
 		) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;");
 
-		$this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "autobilling_mutasimandiri");
-		$this->db->query("CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "autobilling_mutasimandiri` (
+		$this->db->query("DROP TABLE IF EXISTS `" . $prefix . "autobilling_mutasimandiri`");
+		$this->db->query("CREATE TABLE IF NOT EXISTS `" . $prefix . "autobilling_mutasimandiri` (
 		  `mutasi_id` int(11) NOT NULL AUTO_INCREMENT,
 		  `tgl` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 		  `tglstr` varchar(20) NULL DEFAULT '2015/09/01',
@@ -269,7 +280,8 @@ class ControllerModuleAutobilling extends Controller {
 		} 
 
 	public function getsaldo() {
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "autobilling_saldo WHERE saldo_id = '1'");
+		$prefix = defined('DB_PREFIX') ? DB_PREFIX : '';
+		$query = $this->db->query("SELECT * FROM `" . $prefix . "autobilling_saldo` WHERE saldo_id = '1'");
 		return $query->row;
 	}
 
@@ -287,12 +299,13 @@ class ControllerModuleAutobilling extends Controller {
 	public function getListMandiri() {
 	/*	$mandiri_data = "test";
 		$mandiri_data = $this->cache->get('autobilling_mutasimandiri');
-	    
+		
 
 		if (!$mandiri_data) {*/
 			$mandiri_data = array();
 		
-			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "autobilling_mutasimandiri ORDER BY tgl DESC LIMIT 0,99");
+			$prefix = defined('DB_PREFIX') ? DB_PREFIX : '';
+			$query = $this->db->query("SELECT * FROM `" . $prefix . "autobilling_mutasimandiri` ORDER BY tgl DESC LIMIT 0,99");
 		
 			foreach ($query->rows as $result) {
 				$mandiri_data[] = array(
@@ -317,12 +330,13 @@ class ControllerModuleAutobilling extends Controller {
 	public function getListBCA() {
 	/*	$mandiri_data = "test";
 		$mandiri_data = $this->cache->get('autobilling_mutasimandiri');
-	    
+		
 
 		if (!$mandiri_data) {*/
 			$bca_data = array();
 		
-			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "autobilling_mutasibca ORDER BY tgl DESC LIMIT 0,99");
+			$prefix = defined('DB_PREFIX') ? DB_PREFIX : '';
+			$query = $this->db->query("SELECT * FROM `" . $prefix . "autobilling_mutasibca` ORDER BY tgl DESC LIMIT 0,99");
 		
 			foreach ($query->rows as $result) {
 				$bca_data[] = array(
